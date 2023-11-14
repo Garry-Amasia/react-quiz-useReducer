@@ -1,16 +1,17 @@
 import { useEffect, useReducer } from "react";
-import { Header } from "./Header";
-import { Main } from "./Main";
+import { Header } from "./components/Header";
+import { Main } from "./components/Main";
 import axios from "axios";
-import Error from "./Error";
-import Loader from "./Loader";
-import { StartScreen } from "./StartScreen";
-import { Questions } from "./Questions";
+import Error from "./components/Error";
+import Loader from "./components/Loader";
+import { StartScreen } from "./components/StartScreen";
+import { Questions } from "./components/Questions";
 
 const initialState = {
   questions: [],
-  //loading/error/ready/active/finished
+  //loading/error/ready/active/fißnished
   status: "loading",
+  index: 0,
 };
 
 const reducer = (state, action) => {
@@ -29,7 +30,10 @@ const reducer = (state, action) => {
 };
 
 function App() {
-  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status, index }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   console.log(questions);
   const numberOfQuestions = questions.data?.length;
@@ -69,7 +73,7 @@ function App() {
             dispatch={dispatch}
           />
         )}
-        {status === "active" && <Questions />}
+        {status === "active" && <Questions question={questions.data[index]} />}
       </Main>
     </div>
   );
