@@ -12,6 +12,7 @@ const initialState = {
   //loading/error/ready/active/fißnished
   status: "loading",
   index: 0,
+  answer: null,
 };
 
 const reducer = (state, action) => {
@@ -23,19 +24,22 @@ const reducer = (state, action) => {
       return { ...state, status: "error" };
     case "start":
       return { ...state, status: "active" };
-
+    case "newAnswer":
+      return { ...state, answer: payload };
     default:
       throw new Error("isnt one of the type");
   }
 };
 
 function App() {
-  const [{ questions, status, index }, dispatch] = useReducer(
+  const [{ questions, status, index, answer }, dispatch] = useReducer(
     reducer,
     initialState
   );
 
-  console.log(questions);
+  console.log("rendering");
+
+  // console.log(questions);
   const numberOfQuestions = questions.data?.length;
 
   useEffect(() => {
@@ -73,7 +77,13 @@ function App() {
             dispatch={dispatch}
           />
         )}
-        {status === "active" && <Questions question={questions.data[index]} />}
+        {status === "active" && (
+          <Questions
+            question={questions.data[index]}
+            dispatch={dispatch}
+            answer={answer}
+          />
+        )}
       </Main>
     </div>
   );
