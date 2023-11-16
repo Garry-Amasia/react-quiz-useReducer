@@ -37,7 +37,7 @@ function App() {
     initialState
   );
 
-  console.log("rendering");
+  // console.log("rendering");
 
   // console.log(questions);
   const numberOfQuestions = questions.data?.length;
