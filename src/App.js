@@ -13,6 +13,7 @@ const initialState = {
   status: "loading",
   index: 0,
   answer: null,
+  points: 0,
 };
 
 const reducer = (state, action) => {
@@ -25,19 +26,24 @@ const reducer = (state, action) => {
     case "start":
       return { ...state, status: "active" };
     case "newAnswer":
-      return { ...state, answer: payload };
+      const currentQuestion = state.questions.data[state.index];
+      // console.log(state);
+      // console.log(currentQuestion.correctOption);
+      const pointRewarded =
+        currentQuestion.correctOption === payload
+          ? state.points + currentQuestion.points
+          : currentQuestion.points;
+      // console.log(pointRewarded);
+      return { ...state, answer: payload, points: pointRewarded };
     default:
       throw new Error("isnt one of the type");
   }
 };
 
 function App() {
-  const [{ questions, status, index, answer }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  // console.log("rendering");
+  const { questions, status, index, answer } = state;
 
   // console.log(questions);
   const numberOfQuestions = questions.data?.length;
@@ -57,6 +63,11 @@ function App() {
     fetchData();
   }, []);
 
+  console.log(state);
+
+  // console.log(state);
+  // console.log(state);
+  // console.log("App Components");
   // useEffect(() => {
   //   fetch(`http://localhost:8000/questions`)
   //     .then((res) => res.json())

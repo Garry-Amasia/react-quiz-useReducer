@@ -1,6 +1,7 @@
 import React from "react";
 
 export const StartScreen = ({ numberOfQuestions, dispatch }) => {
+  // console.log("StartScreen Components");
   return (
     <div className="start">
       <h2>Welcome to the Quizz!!</h2>
