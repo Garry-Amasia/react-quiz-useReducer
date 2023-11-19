@@ -6,6 +6,7 @@ import Error from "./components/Error";
 import Loader from "./components/Loader";
 import { StartScreen } from "./components/StartScreen";
 import { Questions } from "./components/Questions";
+import { NextButton } from "./components/NextButton";
 
 const initialState = {
   questions: [],
@@ -35,6 +36,8 @@ const reducer = (state, action) => {
           : currentQuestion.points;
       // console.log(pointRewarded);
       return { ...state, answer: payload, points: pointRewarded };
+    case "nextQuestion":
+      return { ...state, index: state.index + 1, answer: null };
     default:
       throw new Error("isnt one of the type");
   }
@@ -89,11 +92,15 @@ function App() {
           />
         )}
         {status === "active" && (
-          <Questions
-            question={questions.data[index]}
-            dispatch={dispatch}
-            answer={answer}
-          />
+          <>
+            <Questions
+              question={questions.data[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+            {/* {answer && <NextButton dispatch={dispatch} />} */}
+            <NextButton dispatch={dispatch} answer={answer} />
+          </>
         )}
       </Main>
     </div>
