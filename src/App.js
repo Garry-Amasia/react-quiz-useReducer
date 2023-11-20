@@ -34,7 +34,7 @@ const reducer = (state, action) => {
       const pointRewarded =
         currentQuestion.correctOption === payload
           ? state.points + currentQuestion.points
-          : currentQuestion.points;
+          : state.points;
       // console.log(pointRewarded);
       return { ...state, answer: payload, points: pointRewarded };
     case "nextQuestion":
@@ -47,10 +47,16 @@ const reducer = (state, action) => {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { questions, status, index, answer } = state;
+  const { questions, status, index, answer, points } = state;
 
   // console.log(questions);
   const numberOfQuestions = questions.data?.length;
+  const maxAmountOfPoints = questions?.data?.reduce(
+    (previous, current) => previous + current.points,
+    0
+  );
+
+  console.log(answer);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,7 +73,7 @@ function App() {
     fetchData();
   }, []);
 
-  console.log(state);
+  // console.log(state);
 
   // console.log(state);
   // console.log(state);
@@ -94,7 +100,12 @@ function App() {
         )}
         {status === "active" && (
           <>
-            <Progress numberOfQuestions={numberOfQuestions} index={index} />
+            <Progress
+              numberOfQuestions={numberOfQuestions}
+              index={index}
+              points={points}
+              maxAmountOfPoints={maxAmountOfPoints}
+            />
             <Questions
               question={questions.data[index]}
               dispatch={dispatch}
