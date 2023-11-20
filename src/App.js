@@ -7,6 +7,7 @@ import Loader from "./components/Loader";
 import { StartScreen } from "./components/StartScreen";
 import { Questions } from "./components/Questions";
 import { NextButton } from "./components/NextButton";
+import { Progress } from "./components/Progress";
 
 const initialState = {
   questions: [],
@@ -93,6 +94,7 @@ function App() {
         )}
         {status === "active" && (
           <>
+            <Progress numberOfQuestions={numberOfQuestions} index={index} />
             <Questions
               question={questions.data[index]}
               dispatch={dispatch}
