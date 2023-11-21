@@ -8,6 +8,7 @@ import { StartScreen } from "./components/StartScreen";
 import { Questions } from "./components/Questions";
 import { NextButton } from "./components/NextButton";
 import { Progress } from "./components/Progress";
+import { FinishScreen } from "./components/FinishScreen";
 
 const initialState = {
   questions: [],
@@ -16,6 +17,7 @@ const initialState = {
   index: 0,
   answer: null,
   points: 0,
+  highscore: 0,
 };
 
 const reducer = (state, action) => {
@@ -39,6 +41,13 @@ const reducer = (state, action) => {
       return { ...state, answer: payload, points: pointRewarded };
     case "nextQuestion":
       return { ...state, index: state.index + 1, answer: null };
+    case "finish":
+      return {
+        ...state,
+        status: "finished",
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      };
     default:
       throw new Error("isnt one of the type");
   }
@@ -47,7 +56,7 @@ const reducer = (state, action) => {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { questions, status, index, answer, points } = state;
+  const { questions, status, index, answer, points, highscore } = state;
 
   // console.log(questions);
   const numberOfQuestions = questions.data?.length;
@@ -112,8 +121,20 @@ function App() {
               answer={answer}
             />
             {/* {answer && <NextButton dispatch={dispatch} />} */}
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+              numQuestions={numberOfQuestions}
+            />
           </>
+        )}
+        {status === "finished" && (
+          <FinishScreen
+            points={points}
+            maxAmountOfPoints={maxAmountOfPoints}
+            highscore={highscore}
+          />
         )}
       </Main>
     </div>

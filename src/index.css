@@ -172,8 +172,8 @@ progress {
 }
 
 .result {
-  background-color: var(--color-theme);
-  color: var(--color-light);
+  background-color: var(--color-light);
+  color: var(--color-darkest);
   border-radius: 100px;
   text-align: center;
   padding: 2rem 0;
