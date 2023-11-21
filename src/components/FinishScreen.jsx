@@ -1,6 +1,11 @@
 import React from "react";
 
-export const FinishScreen = ({ points, maxAmountOfPoints, highscore }) => {
+export const FinishScreen = ({
+  points,
+  maxAmountOfPoints,
+  highscore,
+  dispatch,
+}) => {
   const percentage = Math.ceil((points / maxAmountOfPoints) * 100);
   return (
     <>
@@ -12,6 +17,12 @@ export const FinishScreen = ({ points, maxAmountOfPoints, highscore }) => {
         -
       </p>
       <p className="highscore">Highscore is {highscore} points</p>
+      <button
+        className="btn btn-ui"
+        onClick={() => dispatch({ type: "restart" })}
+      >
+        Retake the Quiz🤭
+      </button>
     </>
   );
 };

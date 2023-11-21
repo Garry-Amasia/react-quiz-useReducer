@@ -48,6 +48,12 @@ const reducer = (state, action) => {
         highscore:
           state.points > state.highscore ? state.points : state.highscore,
       };
+    case "restart":
+      return {
+        ...initialState,
+        questions: state.questions.data,
+        status: "dataIsReady",
+      };
     default:
       throw new Error("isnt one of the type");
   }
@@ -134,6 +140,7 @@ function App() {
             points={points}
             maxAmountOfPoints={maxAmountOfPoints}
             highscore={highscore}
+            dispatch={dispatch}
           />
         )}
       </Main>
