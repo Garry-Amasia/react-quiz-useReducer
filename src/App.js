@@ -9,6 +9,8 @@ import { Questions } from "./components/Questions";
 import { NextButton } from "./components/NextButton";
 import { Progress } from "./components/Progress";
 import { FinishScreen } from "./components/FinishScreen";
+import { Timer } from "./components/Timer";
+import { Footer } from "./components/Footer";
 
 const initialState = {
   questions: [],
@@ -18,7 +20,10 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
+  secondsRemaining: null,
 };
+
+const SECONDS_PER_QUESTION = 30;
 
 const reducer = (state, action) => {
   const { type, payload } = action;
@@ -28,7 +33,11 @@ const reducer = (state, action) => {
     case "dataFailed":
       return { ...state, status: "error" };
     case "start":
-      return { ...state, status: "active" };
+      return {
+        ...state,
+        status: "active",
+        secondsRemaining: state.questions.data.length * SECONDS_PER_QUESTION,
+      };
     case "newAnswer":
       const currentQuestion = state.questions.data[state.index];
       // console.log(state);
@@ -49,10 +58,18 @@ const reducer = (state, action) => {
           state.points > state.highscore ? state.points : state.highscore,
       };
     case "restart":
+      console.log(state.questions);
+      console.log(state.questions.data);
       return {
         ...initialState,
-        questions: state.questions.data,
+        questions: state.questions,
         status: "dataIsReady",
+      };
+    case "tick":
+      return {
+        ...state,
+        secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? "finished" : state.status,
       };
     default:
       throw new Error("isnt one of the type");
@@ -62,7 +79,15 @@ const reducer = (state, action) => {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { questions, status, index, answer, points, highscore } = state;
+  const {
+    questions,
+    status,
+    index,
+    answer,
+    points,
+    highscore,
+    secondsRemaining,
+  } = state;
 
   // console.log(questions);
   const numberOfQuestions = questions.data?.length;
@@ -70,15 +95,16 @@ function App() {
     (previous, current) => previous + current.points,
     0
   );
+  // console.log(state);
 
-  console.log(answer);
+  // console.log(answer);
 
   useEffect(() => {
     const fetchData = async () => {
       await axios
         .get(`http://localhost:8000/questions`)
         .then((data) => {
-          // console.log(data);
+          console.log(data);
           dispatch({ type: "dataReceived", payload: data });
         })
         .catch((error) => {
@@ -88,9 +114,6 @@ function App() {
     fetchData();
   }, []);
 
-  // console.log(state);
-
-  // console.log(state);
   // console.log(state);
   // console.log("App Components");
   // useEffect(() => {
@@ -127,12 +150,15 @@ function App() {
               answer={answer}
             />
             {/* {answer && <NextButton dispatch={dispatch} />} */}
-            <NextButton
-              dispatch={dispatch}
-              answer={answer}
-              index={index}
-              numQuestions={numberOfQuestions}
-            />
+            <Footer>
+              <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+              <NextButton
+                dispatch={dispatch}
+                answer={answer}
+                index={index}
+                numQuestions={numberOfQuestions}
+              />
+            </Footer>
           </>
         )}
         {status === "finished" && (
